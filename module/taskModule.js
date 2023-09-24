@@ -2,24 +2,30 @@ const mongoose = require("mongoose")
 
 const userSchema = new mongoose.Schema({
 
- task:{
-    type:String,
-    required:true
- },
- taskDetail:{
-    type:String,
-    required:true
- },
- isCompleted:{
-    default:false,
-    type:Boolean
- },
- userId: {
-     type:mongoose.Schema.Types.ObjectId, 
-     ref: 'ChainTech',
-      require: true
- },
-  
+   TaskName: {
+      type: String,
+      required: true
+   },
+   TaskDetail: {
+      type: String,
+      required: true
+   },
+   IsCompleted: {
+      default: false,
+      type: Boolean
+   },
+   UserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ChainTech',
+      required: true
+   },
+   priority: {
+      type: Number,
+      minlength: 1,
+      maxlength: 5,
+      required:true
+   }
+
 }, { timestamps: true })
 
 module.exports = mongoose.model('task', userSchema)

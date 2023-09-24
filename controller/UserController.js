@@ -1,9 +1,9 @@
-const userModel = require('../module/userModule')
+const UserModel = require('../module/UserModule')
 const validator = require("../validation/validation")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const userRegister = async function (req, res) {
+const UserRegister = async function (req, res) {
     try {
         let data = req.body
         let { fname, lname, email, phone, password, address } = data
@@ -30,13 +30,13 @@ const userRegister = async function (req, res) {
         const bcryptPassword = await bcrypt.hash(password, 10)
         data.password = bcryptPassword
 
-        const emailUnique = await userModel.findOne({ email })
-        if (emailUnique) return res.status(400).send({ status: false, message: 'Already register Email' })
+        const EmailUnique = await UserModel.findOne({ email })
+        if (EmailUnique) return res.status(400).send({ status: false, message: 'Already register Email' })
 
-        const phoneUnique = await userModel.findOne({ phone })
-        if (phoneUnique) return res.status(400).send({ status: false, message: "Already register Phone Number" })
+        const PhoneUnique = await UserModel.findOne({ phone })
+        if (PhoneUnique) return res.status(400).send({ status: false, message: "Already register Phone Number" })
 
-        const user = await userModel.create(data)
+        const user = await UserModel.create(data)
         return res.status(201).send({ status: true, message: 'User Created Successfully', data: user })
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
@@ -48,7 +48,7 @@ const userRegister = async function (req, res) {
 //===========================[User Login API]==========================
 
 
-const userLogin = async function (req, res) {
+const UserLogin = async function (req, res) {
     let data = req.body
     let { email, password } = data
 
@@ -59,7 +59,7 @@ const userLogin = async function (req, res) {
 
     if (!password) return res.status(400).send({ status: false, message: 'Please enter password' })
 
-    const Login = await userModel.findOne({ email })
+    const Login = await UserModel.findOne({ email })
     if (!Login) return res.status(400).send({ status: false, message: 'Not a register email Id' })
 
     //----------[Password Verification]
@@ -68,15 +68,16 @@ const userLogin = async function (req, res) {
 
     //----------[JWT token generate]
     let token = jwt.sign({
-        userId: Login._id.toString()
+        UserId: Login._id.toString()
     }, "GroupNumber4", { expiresIn: '50d' })
 
     res.setHeader("x-api-key", token)
 
-    return res.status(200).send({ status: true, message: 'User login successfull', data: { userId: Login._id, token: token } })
+    return res.status(200).send({ status: true, message: 'User login successfull', data: { UserId: Login._id, token: token } })
 }
 
-module.exports.userRegister=userRegister
+module.exports.UserRegister=UserRegister
+module.exports.UserLogin=UserLogin
 
 
 

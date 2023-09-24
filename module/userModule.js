@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
 
   password: { type: String, required: true, minLen: 8, maxLen: 15, trim: true }, // encrypted password
 
- 
+  tasks: [{ 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "task"
+ }]
   
 }, { timestamps: true })
 
