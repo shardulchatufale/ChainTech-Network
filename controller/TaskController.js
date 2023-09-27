@@ -1,32 +1,36 @@
 const mongoose = require("mongoose")
 const TaskModule = require("../module/TaskModule")
 const userModule = require("../module/UserModule")
+const validator=require("../validation/validation")
 
 const CreateTask = async function (req, res) {
     try {
         let body = req.body
 
-        let { TaskName, TaskDetail, priority, UserId, title } = body
+        let { TaskName, TaskDetail, priority, UserId,...rest} = body
+        if (Object.keys(rest).length > 0)return res.status(400).send({ status: false, message: "you cannot add oher field than TaskName,TaskDetail,priority,UserId" })
+
+        if(body.IsCompleted==true) return res.status(400).send({ status: false, message: "you cannot create completed task" })
 
         if (Object.keys(body).length === 0) return res.status(400).send({ status: false, message: "Please Provide data to create a new task." })
 
         if (!TaskName) return res.status(400).send({ status: false, message: "taskname is required" })
+        if(!validator.isValid(TaskName))return res.status(400).send({ status: false, message: "provide TaskName in right format" })
+        if (!(/^[A-Za-z_ ]+$/.test(TaskName))) return res.status(400).send({ status: false, message: "Please enter valid taskname" })
+
         if (!TaskDetail) return res.status(400).send({ status: false, message: "taskdetail is required" })
-        if (!priority) return res.status(400).send({ status: false, message: "priority is required" })
+    
         if (!UserId) return res.status(400).send({ status: false, message: "userid is required" })
-
-        // let checktaskname = await TaskModule.findOne({ taskname })
-        // if (checktaskname) return res.status(400).send({ status: false, message: "Title is already used" })
-        if (!(/^[A-Za-z_ ]+$/.test(title))) return res.status(400).send({ status: false, message: "Please enter valid taskname" })
-
         if (!mongoose.Types.ObjectId.isValid(UserId)) return res.status(400).send({ status: false, message: "Invalid UserId" })
-        let CheckUserid = await userModule.findById(UserId)
-        if (!CheckUserid) return res.status(404).send({ status: false, message: "userId not found" })
-
-
+        
         if (!priority) return res.status(400).send({ status: false, message: 'priority required and value should not be zero' })
         if (typeof priority != 'number') return res.status(400).send({ status: false, message: 'please enter a number' })
         if (!(priority <= 5)) return res.status(400).send({ status: false, message: 'please enter valid number which less than or equal to 5' });
+        if(priority<=0)return res.status(400).send({ status: false, message: 'please enter valid priority which should not be less han 1' });
+
+        let CheckUserid = await userModule.findById(UserId)
+        if (!CheckUserid) return res.status(404).send({ status: false, message: "userId not found" })
+
 
         const token = req.UserId
         if (token !== body.UserId.toString()) return res.status(403).send({ status: false, message: "you cannot create other users task please provide your user ID" });
@@ -48,7 +52,9 @@ const GetAlltask = async function (req, res) {
     try{
     let data = req.body
 
-    let { UserId } = data
+    let { UserId,...rest } = data
+    if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "you cannot fill other field than UserID" })
+
     if (!UserId) return res.status(400).send({ status: false, message: "Userid is required" })
     if (!mongoose.Types.ObjectId.isValid(UserId)) return res.status(400).send({ status: false, message: "Invalid UserId" })
 
@@ -68,8 +74,8 @@ const MarkTask=async function (req,res){
    try{
 let data =req.body
 let {TaskId,...rest}=data
+if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "you cannot fill other field than TaskId" })
 
-if(rest)return res.status(400).send({ status: false, message: "You cannot provide more thanTaskId" })
 
 if (Object.keys(data).length === 0) return res.status(400).send({ status: false, message: "Please Provide TaskId to mark as completed." })
 
@@ -96,8 +102,10 @@ const EditTask=async function(req,res){
     let data= req.body
     let {TaskName,TaskDetail,priority,...rest}=data
     let id=req.query.TaskId
+    if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "you cannot fill other field than fname,lname,email,phone,password" })
 
-    // if(rest)return res.status(400).send({ status: false, message: "You cannot provide more than TaskName,TaskDetail,priority field" })
+
+
     if (Object.keys(data).length === 0) return res.status(400).send({ status: false, message: "Please Provide data to edit task." })
 
     if(!id){return res.status(400).send({ status: false, message: "TasId is required in Query" })}
@@ -127,7 +135,8 @@ const DeleteTask=async function(req,res){
         let data= req.body
         let {TaskId,...rest}=data
 
-        // if(rest)return res.status(400).send({ status: false, message: "You cannot provide more  TaskId field" })
+        if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "you cannot fill other field than TaskId" })
+
 
         if(!TaskId){return res.status(400).send({ status: false, message: "Userid is required" })}
         if (!mongoose.Types.ObjectId.isValid(TaskId)) return res.status(400).send({ status: false, message: "Invalid UserId" })

@@ -5,8 +5,10 @@ const jwt = require('jsonwebtoken')
 
 const UserRegister = async function (req, res) {
     try {
+       
         let data = req.body
-        let { fname, lname, email, phone, password, address } = data
+        let { fname, lname, email, phone, password, ...rest } = data
+        if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "you cannot fill other field than fname,lname,email,phone,password" })
 
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "Please Enter data" })
 
@@ -50,7 +52,9 @@ const UserRegister = async function (req, res) {
 
 const UserLogin = async function (req, res) {
     let data = req.body
-    let { email, password } = data
+    let { email, password ,...rest} = data
+    if (Object.keys(rest).length > 0) return res.status(400).send({ status: false, message: "you cannot fill other field than email,password" })
+
 
     if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "Please Enter data" })
 
@@ -69,7 +73,7 @@ const UserLogin = async function (req, res) {
     //----------[JWT token generate]
     let token = jwt.sign({
         UserId: Login._id.toString()
-    }, "GroupNumber4", { expiresIn: '50d' })
+    }, "GroupNumber4", { expiresIn: '24h' })
 
     res.setHeader("x-api-key", token)
 
