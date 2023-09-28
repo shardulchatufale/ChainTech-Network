@@ -62,7 +62,7 @@ const GetAlltask = async function (req, res) {
     if (token !== data.UserId.toString()) return res.status(403).send({ status: false, message: "you cannot get other users task please provide your user ID" });
 
     let AllTask = await TaskModule.find({ UserId: UserId })
-    res.status(200).send({ status: true, message: 'Book list by this user', data: AllTask })
+    res.status(200).send({ status: true, message: 'task list by this user', data: AllTask })
     }catch(err){
         console.log(err);
         return res.status(500).send({ status: false, message: err.message })
