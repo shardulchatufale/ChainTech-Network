@@ -1,5 +1,5 @@
-const UserModel = require('../module/UserModule')
-const validator = require("../validation/validation")
+const UserModel = require('../module/userModule.js')
+const validator = require("../validation/validation") 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -80,8 +80,7 @@ const UserLogin = async function (req, res) {
     return res.status(200).send({ status: true, message: 'User login successfull', data: { UserId: Login._id, token: token } })
 }
 
-module.exports.UserRegister=UserRegister
-module.exports.UserLogin=UserLogin
+module.exports={UserRegister,UserLogin}
 
 
 
