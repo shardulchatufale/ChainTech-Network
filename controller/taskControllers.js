@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const TaskModule = require("../module/taskModule")
-const UserModule = require("../module/userModule.js")
+const UserModule = require("../module/userModule")
 const validator=require("../validation/validation")
 
 const CreateTask = async function (req, res) {

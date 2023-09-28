@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const taskController = require('../controller/taskControllers.js')
-const userController = require('../controller/userController.js')
+const taskController = require('../controller/taskControllers')
+const userController = require('../controller/userController')
 const middleware=require("../middleware/auth");
 
 router.post('/register', userController.UserRegister);
