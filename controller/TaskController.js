@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const TaskModule = require("../module/TaskModule")
-const userModule = require("../module/UserModule")
+const UserModule = require("../module/UserModule")
 const validator=require("../validation/validation")
 
 const CreateTask = async function (req, res) {
@@ -28,7 +28,7 @@ const CreateTask = async function (req, res) {
         if (!(priority <= 5)) return res.status(400).send({ status: false, message: 'please enter valid number which less than or equal to 5' });
         if(priority<=0)return res.status(400).send({ status: false, message: 'please enter valid priority which should not be less han 1' });
 
-        let CheckUserid = await userModule.findById(UserId)
+        let CheckUserid = await UserModule.findById(UserId)
         if (!CheckUserid) return res.status(404).send({ status: false, message: "userId not found" })
 
 
