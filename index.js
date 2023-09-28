@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const route = require("../ChainTech-Network/route/route");
+const route = require("./route/route");
 const mongoose = require("mongoose");
 const app = express();
 
